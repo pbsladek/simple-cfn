@@ -330,7 +330,7 @@ function Cfn (name, template) {
 
   function processTemplate (template) {
     // Check if template is located in S3
-    if (isUriTemplate(template)) return Promise.resolve({TemplateURL: template})
+    if (isUriTemplate(template)) return Promise.resolve({ TemplateURL: template })
 
     // Check if template if a `js` file
     if (_.endsWith(template, '.js')) return loadJs(template).then(templateBodyObject)

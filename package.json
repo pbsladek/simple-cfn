@@ -45,25 +45,26 @@
     ]
   },
   "dependencies": {
-    "aws-sdk": "2.435.0",
+    "aws-sdk": "^2.435.0",
     "bluebird": "^3.5.4",
-    "chalk": "2.4.2",
-    "https-proxy-agent": "2.2.1",
-    "lodash": "4.17.11",
-    "meow": "5.0.0",
-    "moment": "2.24.0",
-    "sprintf-js": "1.1.2",
-    "yamljs": "0.3.0"
+    "chalk": "^2.4.2",
+    "global": "^4.3.2",
+    "https-proxy-agent": "^2.2.1",
+    "lodash": "^4.17.11",
+    "meow": "^5.0.0",
+    "moment": "^2.24.0",
+    "sprintf-js": "^1.1.2",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "aws-sdk-mock": "4.3.1",
-    "mocha": "6.0.2",
-    "uuid": "3.3.2",
-    "nyc": "13.3.0",
-    "should": "13.2.3",
-    "should-sinon": "0.0.6",
-    "sinon": "7.3.1",
-    "snazzy": "8.0.0",
-    "standard": "12.0.1"
+    "aws-sdk-mock": "^4.3.1",
+    "mocha": "^6.0.2",
+    "nyc": "^13.3.0",
+    "should": "^13.2.3",
+    "should-sinon": "^0.0.6",
+    "sinon": "^7.3.1",
+    "snazzy": "^8.0.0",
+    "uuid": "^3.3.2",
+    "standard": "^12.0.1"
   }
 }

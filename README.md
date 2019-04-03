@@ -247,7 +247,7 @@ cfn({
 
 # License
 
-This repo is licensed under [MIT](https://github.com/pbsladek//simple-cfn/blob/master/LICENSE)
+This repo is licensed under [MIT](https://github.com/pbsladek/simple-cfn/blob/master/LICENSE)
 
 [Local version](./LICENSE)
 

@@ -16,9 +16,9 @@ var cfEventFactory = function () {
   var cfEvent = {
     StackId: 'arn:aws:cloudformation:us-west-2:00000000000:stack/test-stack-name/000f000-0000-0000-a000-00000000000',
     StackName: 'test-stack-name',
-        // default timestamp is 1 second in future
+    // default timestamp is 1 second in future
     Timestamp: createMockDate(1000),
-        // set event timestamp relative to when stack update started
+    // set event timestamp relative to when stack update started
     setRelativeTimestamp: function (msInFuture) {
       this.Timestamp = createMockDate(msInFuture)
       return this

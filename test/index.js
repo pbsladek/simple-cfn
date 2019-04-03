@@ -155,7 +155,7 @@ describe('create/update', function () {
       it('updates stack from json template file with CloudFormation parameters', function () {
         const getTemplateSummaryStub = AWS.mock('CloudFormation', 'getTemplateSummary', sinon.stub().callsArgWith(1, null, {
           Parameters: [
-            {ParameterKey: 'TableName'}
+            { ParameterKey: 'TableName' }
           ]
         }))
         var cfn = require('../')
@@ -184,7 +184,7 @@ describe('create/update', function () {
       it('updates stack from yaml template file with CloudFormation parameters', function () {
         const getTemplateSummaryStub = AWS.mock('CloudFormation', 'getTemplateSummary', sinon.stub().callsArgWith(1, null, {
           Parameters: [
-            {ParameterKey: 'TableName'}
+            { ParameterKey: 'TableName' }
           ]
         }))
         var cfn = require('../')
@@ -213,7 +213,7 @@ describe('create/update', function () {
       it('updates stack from yaml template file with CloudFormation parameters AND tags', function () {
         const getTemplateSummaryStub = AWS.mock('CloudFormation', 'getTemplateSummary', sinon.stub().callsArgWith(1, null, {
           Parameters: [
-            {ParameterKey: 'TableName'}
+            { ParameterKey: 'TableName' }
           ]
         }))
         var cfn = require('../')
@@ -227,31 +227,31 @@ describe('create/update', function () {
             key: 'value'
           }
         })
-        .then(function (data) {
-          getTemplateSummaryStub.stub.should.be.calledOnce()
-          createStackStub.stub.should.not.be.called()
-          updateStackStub.stub.should.be.calledOnce()
-          updateStackStub.stub.should.be.calledWithMatch({
-            Parameters: [
-              {
-                ParameterKey: 'TableName',
-                ParameterValue: 'TestTable'
-              }
-            ],
-            Tags: [
-              {
-                Key: 'key',
-                Value: 'value'
-              }
-            ]
+          .then(function (data) {
+            getTemplateSummaryStub.stub.should.be.calledOnce()
+            createStackStub.stub.should.not.be.called()
+            updateStackStub.stub.should.be.calledOnce()
+            updateStackStub.stub.should.be.calledWithMatch({
+              Parameters: [
+                {
+                  ParameterKey: 'TableName',
+                  ParameterValue: 'TestTable'
+                }
+              ],
+              Tags: [
+                {
+                  Key: 'key',
+                  Value: 'value'
+                }
+              ]
+            })
+            return data
           })
-          return data
-        })
       })
       it('updates stack from yaml template file with CloudFormation parameters AND empty tags when none passed', function () {
         const getTemplateSummaryStub = AWS.mock('CloudFormation', 'getTemplateSummary', sinon.stub().callsArgWith(1, null, {
           Parameters: [
-            {ParameterKey: 'TableName'}
+            { ParameterKey: 'TableName' }
           ]
         }))
         var cfn = require('../')
@@ -262,26 +262,26 @@ describe('create/update', function () {
             TableName: 'TestTable'
           }
         })
-        .then(function (data) {
-          getTemplateSummaryStub.stub.should.be.calledOnce()
-          createStackStub.stub.should.not.be.called()
-          updateStackStub.stub.should.be.calledOnce()
-          updateStackStub.stub.should.be.calledWithMatch({
-            Parameters: [
-              {
-                ParameterKey: 'TableName',
-                ParameterValue: 'TestTable'
-              }
-            ],
-            Tags: []
+          .then(function (data) {
+            getTemplateSummaryStub.stub.should.be.calledOnce()
+            createStackStub.stub.should.not.be.called()
+            updateStackStub.stub.should.be.calledOnce()
+            updateStackStub.stub.should.be.calledWithMatch({
+              Parameters: [
+                {
+                  ParameterKey: 'TableName',
+                  ParameterValue: 'TestTable'
+                }
+              ],
+              Tags: []
+            })
+            return data
           })
-          return data
-        })
       })
       it('updates stack from js module file with module and CloudFormation parameters', function () {
         const getTemplateSummaryStub = AWS.mock('CloudFormation', 'getTemplateSummary', sinon.stub().callsArgWith(1, null, {
           Parameters: [
-            {ParameterKey: 'readCap'}
+            { ParameterKey: 'readCap' }
           ]
         }))
         var cfn = require('../')
@@ -295,21 +295,21 @@ describe('create/update', function () {
             testParam: 'FOR-JS-TEMPLATE'
           }
         })
-        .then(function (data) {
-          getTemplateSummaryStub.stub.should.be.calledOnce()
-          createStackStub.stub.should.not.be.called()
-          updateStackStub.stub.should.be.calledOnce()
-          updateStackStub.stub.should.be.calledWithMatch({
-            Parameters: [
-              {
-                ParameterKey: 'readCap',
-                ParameterValue: '1'
-              }
-            ]
+          .then(function (data) {
+            getTemplateSummaryStub.stub.should.be.calledOnce()
+            createStackStub.stub.should.not.be.called()
+            updateStackStub.stub.should.be.calledOnce()
+            updateStackStub.stub.should.be.calledWithMatch({
+              Parameters: [
+                {
+                  ParameterKey: 'readCap',
+                  ParameterValue: '1'
+                }
+              ]
+            })
+            updateStackStub.stub.firstCall.args[0].TemplateBody.should.match(/"TableName":"TEST-TABLE-6-FOR-JS-TEMPLATE"/)
+            return data
           })
-          updateStackStub.stub.firstCall.args[0].TemplateBody.should.match(/"TableName":"TEST-TABLE-6-FOR-JS-TEMPLATE"/)
-          return data
-        })
       })
     })
     describe('if stack does not exist', function () {
@@ -330,7 +330,7 @@ describe('create/update', function () {
       it('creates stack from yaml template string without parameters', function () {
         var cfn = require('../')
         return cfn('test-stack-name',
-                            '---\n' +
+          '---\n' +
                             "AWSTemplateFormatVersion: '2010-09-09'\n" +
                             'Description: Test Stack\n' +
                             'Resources:\n' +
@@ -347,16 +347,16 @@ describe('create/update', function () {
                             "        ReadCapacityUnits: '1'\n" +
                             "        WriteCapacityUnits: '1'\n" +
                             '      TableName: TEST-TABLE-6'
-                )
-                .then(function (data) {
-                  createStackStub.stub.should.be.calledOnce()
-                  updateStackStub.stub.should.not.be.called()
-                  return data
-                })
+        )
+          .then(function (data) {
+            createStackStub.stub.should.be.calledOnce()
+            updateStackStub.stub.should.not.be.called()
+            return data
+          })
       })
       it('creates stack from json template file with CloudFormation parameters', function () {
         const getTemplateSummaryStub = AWS.mock('CloudFormation', 'getTemplateSummary', sinon.stub().callsArgWith(1, null, {
-          Parameters: [{ParameterKey: 'TableName'}]
+          Parameters: [{ ParameterKey: 'TableName' }]
         }))
         var cfn = require('../')
         return cfn({
@@ -366,24 +366,24 @@ describe('create/update', function () {
             TableName: 'TestTable'
           }
         })
-        .then(function (data) {
-          getTemplateSummaryStub.stub.should.be.calledOnce()
-          createStackStub.stub.should.be.calledOnce()
-          createStackStub.stub.should.be.calledWithMatch({
-            Parameters: [
-              {
-                ParameterKey: 'TableName',
-                ParameterValue: 'TestTable'
-              }
-            ]
+          .then(function (data) {
+            getTemplateSummaryStub.stub.should.be.calledOnce()
+            createStackStub.stub.should.be.calledOnce()
+            createStackStub.stub.should.be.calledWithMatch({
+              Parameters: [
+                {
+                  ParameterKey: 'TableName',
+                  ParameterValue: 'TestTable'
+                }
+              ]
+            })
+            updateStackStub.stub.should.not.be.called()
+            return data
           })
-          updateStackStub.stub.should.not.be.called()
-          return data
-        })
       })
       it('creates stack from yaml template file with CloudFormation parameters', function () {
         const getTemplateSummaryStub = AWS.mock('CloudFormation', 'getTemplateSummary', sinon.stub().callsArgWith(1, null, {
-          Parameters: [{ParameterKey: 'TableName'}]
+          Parameters: [{ ParameterKey: 'TableName' }]
         }))
 
         var cfn = require('../')
@@ -394,24 +394,24 @@ describe('create/update', function () {
             TableName: 'TestTable'
           }
         })
-        .then(function (data) {
-          getTemplateSummaryStub.stub.should.be.calledOnce()
-          createStackStub.stub.should.be.calledOnce()
-          createStackStub.stub.should.be.calledWithMatch({
-            Parameters: [
-              {
-                ParameterKey: 'TableName',
-                ParameterValue: 'TestTable'
-              }
-            ]
+          .then(function (data) {
+            getTemplateSummaryStub.stub.should.be.calledOnce()
+            createStackStub.stub.should.be.calledOnce()
+            createStackStub.stub.should.be.calledWithMatch({
+              Parameters: [
+                {
+                  ParameterKey: 'TableName',
+                  ParameterValue: 'TestTable'
+                }
+              ]
+            })
+            updateStackStub.stub.should.not.be.called()
+            return data
           })
-          updateStackStub.stub.should.not.be.called()
-          return data
-        })
       })
       it('creates stack from yaml template file with CloudFormation parameters', function () {
         const getTemplateSummaryStub = AWS.mock('CloudFormation', 'getTemplateSummary', sinon.stub().callsArgWith(1, null, {
-          Parameters: [{ParameterKey: 'TableName'}]
+          Parameters: [{ ParameterKey: 'TableName' }]
         }))
         var cfn = require('../')
         return cfn({
@@ -421,24 +421,24 @@ describe('create/update', function () {
             TableName: 'TestTable'
           }
         })
-        .then(function (data) {
-          getTemplateSummaryStub.stub.should.be.calledOnce()
-          createStackStub.stub.should.be.calledOnce()
-          createStackStub.stub.should.be.calledWithMatch({
-            Parameters: [
-              {
-                ParameterKey: 'TableName',
-                ParameterValue: 'TestTable'
-              }
-            ]
+          .then(function (data) {
+            getTemplateSummaryStub.stub.should.be.calledOnce()
+            createStackStub.stub.should.be.calledOnce()
+            createStackStub.stub.should.be.calledWithMatch({
+              Parameters: [
+                {
+                  ParameterKey: 'TableName',
+                  ParameterValue: 'TestTable'
+                }
+              ]
+            })
+            updateStackStub.stub.should.not.be.called()
+            return data
           })
-          updateStackStub.stub.should.not.be.called()
-          return data
-        })
       })
       it('creates stack from js module file with module and CloudFormation parameters', function () {
         const getTemplateSummaryStub = AWS.mock('CloudFormation', 'getTemplateSummary', sinon.stub().callsArgWith(1, null, {
-          Parameters: [{ParameterKey: 'readCap'}]
+          Parameters: [{ ParameterKey: 'readCap' }]
         }))
         var cfn = require('../')
         return cfn({
@@ -451,21 +451,21 @@ describe('create/update', function () {
             testParam: 'FOR-JS-TEMPLATE'
           }
         })
-        .then(function (data) {
-          getTemplateSummaryStub.stub.should.be.calledOnce()
-          updateStackStub.stub.should.not.be.called()
-          createStackStub.stub.should.be.calledOnce()
-          createStackStub.stub.should.be.calledWithMatch({
-            Parameters: [
-              {
-                ParameterKey: 'readCap',
-                ParameterValue: '1'
-              }
-            ]
+          .then(function (data) {
+            getTemplateSummaryStub.stub.should.be.calledOnce()
+            updateStackStub.stub.should.not.be.called()
+            createStackStub.stub.should.be.calledOnce()
+            createStackStub.stub.should.be.calledWithMatch({
+              Parameters: [
+                {
+                  ParameterKey: 'readCap',
+                  ParameterValue: '1'
+                }
+              ]
+            })
+            createStackStub.stub.firstCall.args[0].TemplateBody.should.match(/"TableName":"TEST-TABLE-6-FOR-JS-TEMPLATE"/)
+            return data
           })
-          createStackStub.stub.firstCall.args[0].TemplateBody.should.match(/"TableName":"TEST-TABLE-6-FOR-JS-TEMPLATE"/)
-          return data
-        })
       })
     })
   })
