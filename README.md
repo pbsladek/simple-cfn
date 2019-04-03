@@ -248,8 +248,11 @@ cfn({
 # License
 
 This repo is licensed under [MIT](https://github.com/pbsladek//simple-cfn/blob/master/LICENSE)
+
 [Local version](./LICENSE)
 
 Original work done by [Andy Day & contributors](https://github.com/andyday)
+
 [Original MIT license](https://github.com/Nordstrom/cfn/blob/master/LICENSE)
+
 [Local version](./LICENSE-2)
