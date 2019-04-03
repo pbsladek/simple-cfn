@@ -1,0 +1,69 @@
+{
+  "name": "cfn",
+  "version": "1.7.1",
+  "description": "Simple AWS CloudFormation",
+  "main": "index.js",
+  "scripts": {
+    "test": "(standard | snazzy) && nyc mocha",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nordstrom/cfn.git"
+  },
+  "files": [
+    "*.js",
+    "LICENSE",
+    "*.json",
+    "*.lock",
+    "*.md"
+  ],
+  "bin": "cli.js",
+  "keywords": [
+    "Cloud",
+    "Formation",
+    "CloudFormation",
+    "Cloud-Formation",
+    "Node.js",
+    "Stack",
+    "Deploy"
+  ],
+  "author": "Paul Sladek",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pbsladek/simple-cfn"
+  },
+  "homepage": "https://github.com/pbsladek/simple-cfn#readme",
+  "standard": {
+    "globals": [
+      "describe",
+      "it",
+      "before",
+      "beforeEach",
+      "after",
+      "afterEach"
+    ]
+  },
+  "dependencies": {
+    "aws-sdk": "2.435.0",
+    "bluebird": "^3.5.4",
+    "chalk": "2.4.2",
+    "https-proxy-agent": "2.2.1",
+    "lodash": "4.17.11",
+    "meow": "5.0.0",
+    "moment": "2.24.0",
+    "sprintf": "0.1.5",
+    "yamljs": "0.3.0"
+  },
+  "devDependencies": {
+    "aws-sdk-mock": "4.3.1",
+    "mocha": "6.0.2",
+    "node-uuid": "1.4.8",
+    "nyc": "13.3.0",
+    "should": "13.2.3",
+    "should-sinon": "0.0.6",
+    "sinon": "7.3.1",
+    "snazzy": "8.0.0",
+    "standard": "12.0.1"
+  }
+}
