@@ -1,6 +1,6 @@
-# cfn [![Build Status](https://travis-ci.org/Nordstrom/cfn.svg?branch=master)](https://travis-ci.org/Nordstrom/cfn) [![Coverage Status](https://coveralls.io/repos/github/Nordstrom/cfn/badge.svg?branch=master)](https://coveralls.io/github/Nordstrom/cfn?branch=master) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+# simple-cfn [![Build Status](https://travis-ci.com/pbsladek/simple-cfn.svg?branch=master)](https://travis-ci.com/pbsladek/simple-cfn) [![Coverage Status](https://coveralls.io/repos/github/pbsladek/simple-cfn/badge.svg?branch=master)](https://coveralls.io/github/pbsladek/simple-cfn?branch=master) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-cfn makes the following AWS CloudFormation tasks simpler.
+simple-cfn makes the following AWS CloudFormation tasks simpler.
 ##### Create / Update Stack
 * If the stack already exists, it Updates; otherwise, it Creates.
 * Monitors stack progress, logging events.
@@ -20,32 +20,32 @@ cfn makes the following AWS CloudFormation tasks simpler.
 
 ## Install
 ```
-$ npm install cfn --save-dev
+$ npm install simple-cfn --save-dev
 ```
 
 ## CLI Usage
 
 ```
   Usage
-    cfn deploy {stack name} {template} [--{param key}={param value}...]
-    cfn delete {stack name}
-    cfn outputs {stack name}
+    simple-cfn deploy {stack name} {template} [--{param key}={param value}...]
+    simple-cfn delete {stack name}
+    simple-cfn outputs {stack name}
 
   Examples
-    cfn deploy my-stack template.js
-    cfn deploy your_stack template.yml --ImageId=ami-828283 --VpcId=vpc-828283
-    cfn delete your_stack
-    cfn outputs my-stack
+    simple-cfn deploy my-stack template.js
+    simple-cfn deploy your_stack template.yml --ImageId=ami-828283 --VpcId=vpc-828283
+    simple-cfn delete your_stack
+    simple-cfn outputs my-stack
 ```
 
 ## Programmatic Usage 
 
 ### Create / Update
-Use cfn to create or update an AWS CloudFormation stack.  It returns a promise.  You can use Node.js modules or standard
+Use simple-cfn to create or update an AWS CloudFormation stack.  It returns a promise.  You can use Node.js modules or standard
 json or yaml for AWS CloudFormation templates.
 
 ```javascript
-const cfn = require('cfn');
+const cfn = require('simple-cfn');
 
 // Create or update (if it exists) the Foo-Bar stack with the template.js Node.js module.
 cfn('Foo-Bar', __dirname + '/template.js')
