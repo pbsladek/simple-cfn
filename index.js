@@ -57,6 +57,7 @@ const colorMap = {
   DELETE_IN_PROGRESS: 'gray',
   DELETE_COMPLETE: 'green',
   DELETE_FAILED: 'red',
+  DELETE_SKIPPED: 'gray',
   ROLLBACK_FAILED: 'red',
   ROLLBACK_IN_PROGRESS: 'yellow',
   ROLLBACK_COMPLETE: 'red',
@@ -86,6 +87,7 @@ function Cfn (name, template) {
   let awsOpts = {}
   let startedAt = Date.now()
   let params = opts.params
+  let disabledRollback = opts.disabledRollback || true
   let cfParams = opts.cfParams || {}
   let awsConfig = opts.awsConfig
   let capabilities = opts.capabilities || ['CAPABILITY_IAM', 'CAPABILITY_NAMED_IAM']
@@ -141,12 +143,14 @@ function Cfn (name, template) {
         _.forEach(events, function (event) {
           displayedEvents[event.EventId] = true
           if (moment(event.Timestamp).valueOf() >= startedAt) {
+            const color = colorMap[event.ResourceStatus] || 'gray'
             log(sprintf('[%s] %s %s: %s - %s  %s  %s',
               chalk.gray(moment(event.Timestamp).format('HH:mm:ss')),
               ings[action],
               chalk.cyan(name),
               event.ResourceType,
               event.LogicalResourceId,
+              chalk[color](event.ResourceStatus),
               chalk[colorMap[event.ResourceStatus]](event.ResourceStatus),
               event.ResourceStatusReason || ''
             ))
@@ -274,7 +278,7 @@ function Cfn (name, template) {
 
     // mutate params
     _.keys(params).forEach(k => {
-      params[_.toLower(k)] = params[k]
+      params[_.toLower(k)] = _.toString(params[k])
     })
     return cf.getTemplateSummary(templateObject).promise()
       .then(data => {
@@ -359,6 +363,7 @@ function Cfn (name, template) {
               StackName: name,
               Capabilities: capabilities,
               Parameters: noramlizedParams,
+              DisableRollback: disabledRollback,
               Tags: convertTags()
             }, templateObject))
           })

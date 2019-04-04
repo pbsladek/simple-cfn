@@ -331,22 +331,22 @@ describe('create/update', function () {
         var cfn = require('../')
         return cfn('test-stack-name',
           '---\n' +
-                            "AWSTemplateFormatVersion: '2010-09-09'\n" +
-                            'Description: Test Stack\n' +
-                            'Resources:\n' +
-                            '  testTable:\n' +
-                            '    Type: AWS::DynamoDB::Table\n' +
-                            '    Properties:\n' +
-                            '      AttributeDefinitions:\n' +
-                            '      - AttributeName: id\n' +
-                            '        AttributeType: S\n' +
-                            '      KeySchema:\n' +
-                            '      - AttributeName: id\n' +
-                            '        KeyType: HASH\n' +
-                            '      ProvisionedThroughput:\n' +
-                            "        ReadCapacityUnits: '1'\n" +
-                            "        WriteCapacityUnits: '1'\n" +
-                            '      TableName: TEST-TABLE-6'
+          "AWSTemplateFormatVersion: '2010-09-09'\n" +
+          'Description: Test Stack\n' +
+          'Resources:\n' +
+          '  testTable:\n' +
+          '    Type: AWS::DynamoDB::Table\n' +
+          '    Properties:\n' +
+          '      AttributeDefinitions:\n' +
+          '      - AttributeName: id\n' +
+          '        AttributeType: S\n' +
+          '      KeySchema:\n' +
+          '      - AttributeName: id\n' +
+          '        KeyType: HASH\n' +
+          '      ProvisionedThroughput:\n' +
+          "        ReadCapacityUnits: '1'\n" +
+          "        WriteCapacityUnits: '1'\n" +
+          '      TableName: TEST-TABLE-6'
         )
           .then(function (data) {
             createStackStub.stub.should.be.calledOnce()

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict'
 
+const os = require('os')
 const cfn = require('./')
 const _ = require('lodash')
 const chalk = require('chalk')
@@ -11,17 +12,17 @@ Promise.longStackTraces()
 
 const cli = meow(`
   Usage
-    cfn deploy {stack name} {template} [--{param key}={param value}...]
-    cfn delete {stack name}
-    cfn outputs {stack name}
-    cfn output {stack name} {field name}
+    simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--{param key}={param value}...]
+    simple-cfn delete {stack name}
+    simple-cfn outputs {stack name}
+    simple-cfn output {stack name} {field name}
 
   Examples
-    cfn deploy my-stack template.js
-    cfn deploy your_stack template.yml --ImageId=ami-828283 --VpcId=vpc-828283
-    cfn delete your_stack
-    cfn outputs my-stack
-    cfn output my-stack my-field
+    simple-cfn deploy my-stack template.js
+    simple-cfn deploy your_stack template.yml --ImageId=ami-828283 --VpcId=vpc-828283 --capability=CAPABILITY_NAMED_IAM --capability=CAPABILITY_AUTO_EXPAND
+    simple-cfn delete your_stack
+    simple-cfn outputs my-stack
+    simple-cfn output my-stack my-field
 `)
 
 const cmds = {
@@ -31,14 +32,22 @@ const cmds = {
       const name = cli.input[1]
       const template = cli.input[2]
 
-      let cfParams = cli.flags
-      if (cfParams && cfParams.length > 0) {
-        console.log(`${chalk.cyan('Cloud Formation Parameters')}\n==========================`)
-        console.log(_.toPairs(cfParams).map(a => `${a[0]}: ${a[1]}`).join('\n'))
-        console.log('==========================`)\n')
+      const cfParams = _.omit(cli.flags, ['capability'])
+      if (cfParams && Object.keys(cfParams).length > 0) {
+        console.log(`${chalk.cyan('Cloud Formation Parameters')}${os.EOL}==========================`)
+        console.log(_.toPairs(cfParams).map(a => `${a[0]}: ${a[1]}`).join(os.EOL))
+        console.log(`==========================${os.EOL}`)
       }
 
-      return cfn({ name, template, cfParams })
+      let capabilities
+      if (cli.flags.capability) {
+        capabilities = Array.isArray(cli.flags.capability) ? cli.flags.capability : [cli.flags.capability]
+        console.log(`${chalk.cyan('Cloud Formation Capabilities')}${os.EOL}==========================`)
+        console.log(capabilities.join(os.EOL))
+        console.log(`==========================${os.EOL}`)
+      }
+
+      return cfn({ name, template, cfParams, capabilities })
     }
   },
 
