@@ -1,5 +1,5 @@
 {
-  "name": "cfn",
+  "name": "simple-cfn",
   "version": "2.0.0",
   "description": "Simple AWS CloudFormation",
   "main": "index.js",
@@ -14,6 +14,7 @@
   "files": [
     "*.js",
     "LICENSE",
+    "LICENSE-2",
     "*.json",
     "*.lock",
     "*.md"
