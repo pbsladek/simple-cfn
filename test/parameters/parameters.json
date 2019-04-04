@@ -1,0 +1,7 @@
+{
+    "CidrBlock": "172.32.0.0/26",
+    "EnableDnsSupport": "true",
+    "EnableDnsHostnames": "true",
+    "InstanceTenancy": "default",
+    "TagValue": "simple-cfn-can-delete-this-test-vpc"
+}

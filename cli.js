@@ -2,10 +2,11 @@
 'use strict'
 
 const os = require('os')
-const simpleCfn = require('./')
 const _ = require('lodash')
-const chalk = require('chalk')
 const meow = require('meow')
+const chalk = require('chalk')
+const simpleCfn = require('./')
+const fs = require('fs')
 const Promise = require('bluebird')
 
 Promise.longStackTraces()
@@ -13,6 +14,7 @@ Promise.longStackTraces()
 const cli = meow(`
   Usage
     simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--{param key}={param value}...]
+    simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--file=/path/to/file]
     simple-cfn delete {stack name}
     simple-cfn outputs {stack name}
     simple-cfn output {stack name} {field name}
@@ -32,11 +34,25 @@ const cmds = {
       const name = cli.input[1]
       const template = cli.input[2]
 
-      const cfParams = _.omit(cli.flags, ['capability'])
+      let cfParams = _.omit(cli.flags, ['capability', 'file'])
       if (cfParams && Object.keys(cfParams).length > 0) {
         console.log(`${chalk.cyan('Cloud Formation Parameters')}${os.EOL}==========================`)
         console.log(_.toPairs(cfParams).map(a => `${a[0]}: ${a[1]}`).join(os.EOL))
         console.log(`==========================${os.EOL}`)
+      }
+
+      if (cli.flags.file) {
+        const filePath = cli.flags.file
+        console.log(`${chalk.cyan('Parsing Parameters from file')}${os.EOL}==========================`)
+        console.log(filePath)
+        console.log(`==========================${os.EOL}`)
+
+        if (fs.existsSync(filePath)) {
+          let parsedParams = fs.readFileSync(filePath, 'utf8')
+          cfParams = parsedParams.toString()
+        } else {
+          return Promise.reject(new Error(chalk.red(`${filePath} does not exist. Please double check the path specified via --file.`)))
+        }
       }
 
       let capabilities
@@ -96,5 +112,4 @@ const exec = () => {
 
 exec().catch(err => {
   console.error(chalk.red(err.message || err))
-  cli.showHelp(1)
 })

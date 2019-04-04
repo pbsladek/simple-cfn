@@ -3,24 +3,25 @@
  * periodic polling to check stack status.  So that stack operations are
  * synchronous.
  */
+process.env.AWS_SDK_LOAD_CONFIG = 1
 
-const filesystem = require('fs')
-
-const Promise = require('bluebird')
+const _ = require('lodash')
+const chalk = require('chalk')
 const YAML = require('yamljs')
 const AWS = require('aws-sdk')
-const _ = require('lodash')
-const sprintf = require('sprintf-js').sprintf
 const moment = require('moment')
+const filesystem = require('fs')
+const Promise = require('bluebird')
+const get = require('lodash/fp/get')
+const merge = require('lodash/merge')
 const flow = require('lodash/fp/flow')
 const keyBy = require('lodash/fp/keyBy')
-const get = require('lodash/fp/get')
+const sprintf = require('sprintf-js').sprintf
 const mapValues = require('lodash/fp/mapValues')
-const merge = require('lodash/merge')
-const chalk = require('chalk')
 const HttpsProxyAgent = require('https-proxy-agent')
 
 const fs = Promise.promisifyAll(filesystem)
+
 AWS.config.setPromisesDependency(Promise)
 
 const PROXY = process.env.PROXY || process.env.https_proxy || process.env.http_proxy
@@ -271,6 +272,10 @@ function SimpleCfn (name, template) {
   }
 
   function normalizeParams (templateObject, params) {
+    if (isYAMLString(params)) {
+      params = YAML.parse(params)
+    }
+
     if (!params) return Promise.resolve([])
     if (!_.isPlainObject(params)) return Promise.resolve([])
     if (_.keys(params).length <= 0) return Promise.resolve([])
@@ -279,6 +284,7 @@ function SimpleCfn (name, template) {
     _.keys(params).forEach(k => {
       params[_.toLower(k)] = _.toString(params[k])
     })
+
     return cf.getTemplateSummary(templateObject).promise()
       .then(data => {
         let templateParams = data.Parameters || []
