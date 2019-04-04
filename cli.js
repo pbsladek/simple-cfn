@@ -18,16 +18,19 @@ const cli = meow(`
   Usage
     simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--{param key}={param value}...]
     simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--file=/path/to/file]
+    simple-cfn check {template}
     simple-cfn delete {stack name}
     simple-cfn outputs {stack name}
     simple-cfn output {stack name} {field name}
 
   Examples
-    simple-cfn deploy my-stack template.js
-    simple-cfn deploy your_stack template.yml --ImageId=ami-828283 --VpcId=vpc-828283 --capability=CAPABILITY_NAMED_IAM --capability=CAPABILITY_AUTO_EXPAND
-    simple-cfn delete your_stack
-    simple-cfn outputs my-stack
-    simple-cfn output my-stack my-field
+    simple-cfn deploy stack-name template.js
+    simple-cfn deploy stack-name template.yml --ImageId=ami-828283 --VpcId=vpc-828283 --capability=CAPABILITY_NAMED_IAM --capability=CAPABILITY_AUTO_EXPAND
+    simple-cfn deploy stack-name template.yml --file=/home/parameters.yml
+    simple-cfn check /home/parameters.yml
+    simple-cfn delete stack-name
+    simple-cfn outputs stack-name
+    simple-cfn output stack-name field-name
 `)
 
 const cmds = {
@@ -75,6 +78,14 @@ const cmds = {
     exec: () => {
       const name = cli.input[1]
       return simpleCfn.delete(name)
+    }
+  },
+
+  check: {
+    args: 1,
+    exec: () => {
+      const template = cli.input[1]
+      return simpleCfn.validate(template, {}).then(console.log)
     }
   },
 

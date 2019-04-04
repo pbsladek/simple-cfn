@@ -481,7 +481,7 @@ describe('validate', function () {
 
   it('should validate a valid json template file', function () {
     var simpleCfn = require('../')
-    return simpleCfn.validate('us-west-2', path.join(__dirname, '/templates/test-template-1.json'))
+    return simpleCfn.validate(path.join(__dirname, '/templates/test-template-1.json'))
       .then(function (data) {
         data.should.be.an.Object()
         data.Description.should.equal('Test Stack')
@@ -492,7 +492,7 @@ describe('validate', function () {
   })
   it('should validate a valid yml template file', function () {
     var simpleCfn = require('../')
-    return simpleCfn.validate('us-west-2', path.join(__dirname, '/templates/test-template-5.yml'))
+    return simpleCfn.validate(path.join(__dirname, '/templates/test-template-5.yml'))
       .then(function (data) {
         data.should.be.an.Object()
         data.Description.should.equal('Test Stack')
@@ -503,7 +503,7 @@ describe('validate', function () {
   })
   it('should validate a valid js module file using interpolated module parameters', function () {
     var simpleCfn = require('../')
-    return simpleCfn.validate('us-west-2', path.join(__dirname, '/templates/test-template-3.js'), { testParam: 'TEST' })
+    return simpleCfn.validate(path.join(__dirname, '/templates/test-template-3.js'), { testParam: 'TEST' })
       .then(function (data) {
         data.should.be.an.Object()
         data.Description.should.equal('Test Stack')
@@ -514,7 +514,7 @@ describe('validate', function () {
   })
   it('should validate a valid yml inline template', function () {
     var simpleCfn = require('../')
-    return simpleCfn.validate('us-west-2', '---\n' +
+    return simpleCfn.validate('---\n' +
       "AWSTemplateFormatVersion: '2010-09-09'\n" +
       'Description: Test Stack\n' +
       'Resources:\n' +
@@ -543,7 +543,7 @@ describe('validate', function () {
     AWS.restore('CloudFormation') // needs to be here, as there is some weird state in AWS that doesn't allow mocks to be overwritten
     validateStub = AWS.mock('CloudFormation', 'validateTemplate', require('./mocks/validate')(new Error('Template format error: Unresolved resource dependencies [TableName] in the Resources block of the template')))
     var simpleCfn = require('../')
-    return simpleCfn.validate('us-west-2', '---\n' +
+    return simpleCfn.validate('---\n' +
       "AWSTemplateFormatVersion: '2010-09-09'\n" +
       'Description: Test Stack\n' +
       'Resources:\n' +

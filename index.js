@@ -504,13 +504,10 @@ simpleCfn.delete = function (name) {
   return new SimpleCfn(name).delete()
 }
 
-simpleCfn.validate = function (region, template, params) {
+simpleCfn.validate = function (template, params) {
   return new SimpleCfn({
     template: template,
-    params: params,
-    awsConfig: {
-      region: region
-    }
+    params: params
   }).validate()
 }
 

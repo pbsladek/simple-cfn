@@ -4,6 +4,7 @@ simple-cfn makes the following AWS CloudFormation tasks simpler.
 ##### Create / Update Stack
 * If the stack already exists, it Updates; otherwise, it Creates.
 * Monitors stack progress, logging events.
+* Can read parameters from json or yaml files.
 * Returns a Promise.  Resolves when stack Create / Update is done, Rejects if there is an error.
 
 ##### Delete Stack
@@ -18,9 +19,19 @@ simple-cfn makes the following AWS CloudFormation tasks simpler.
 * Checks if a template is valid
 * Returns a Promise.  Resolves when template is valid, Rejects if there is an error.
 
-## Install
-```
-$ npm install simple-cfn --save-dev
+## Install Options
+```bash
+# Global
+
+yarn global add simple-cfn
+
+npm install -g simple-cfn
+
+# Local
+
+yarn add simple-cfn --dev
+
+npm install simple-cfn --save-dev
 ```
 
 ## CLI Usage
@@ -28,14 +39,18 @@ $ npm install simple-cfn --save-dev
 ```
   Usage
     simple-cfn deploy {stack name} {template} [--{param key}={param value}...]
+    simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--file=/path/to/file]
+    simple-cfn check {template}
     simple-cfn delete {stack name}
-    simple-cfn outputs {stack name}
+    simple-cfn outputs {stack name} {field name}
 
   Examples
-    simple-cfn deploy my-stack template.js
-    simple-cfn deploy your_stack template.yml --ImageId=ami-828283 --VpcId=vpc-828283
-    simple-cfn delete your_stack
-    simple-cfn outputs my-stack
+    simple-cfn deploy stack-name template.js
+    simple-cfn deploy stack-name template.yml --ImageId=ami-828283 --VpcId=vpc-828283
+    simple-cfn deploy stack-name template.yml --file=/home/parameters.yml
+    simple-cfn check /home/parameters.yml
+    simple-cfn delete stack-name
+    simple-cfn outputs stack-name field-name
 ```
 
 ## Programmatic Usage 
@@ -70,11 +85,6 @@ cfn({
   tags: {
     app: 'my app',
     department: 'accounting',
-  },
-  awsConfig: {
-    region: 'us-east-2',
-    accessKeyId: 'akid',
-    secretAccessKey: 'secret',
   },
   capabilities: ['CAPABILITY_IAM'],
   checkStackInterval: 5000,
@@ -124,9 +134,6 @@ cfn({
     template: __dirname + '/template.js',
     params: {
         foo: 'bar'
-    },
-    awsConfig: {
-        region: 'us-west-2'
     }
 }).validate()
     .then(function(data){
@@ -137,10 +144,10 @@ cfn({
     })
 
 // Validate a json template.
-cfn.validate('us-west-2', 'template.json');
+cfn.validate('template.json');
 
 // Validate a yaml template.
-cfn.validate('us-west-2', 'template.yml');
+cfn.validate('template.yml');
 ```
 
 ## API
@@ -225,23 +232,6 @@ cfn({
     name: 'Test-Stack',
     template: 'template.yml',
     cfParams: { env: 'dev' }
-});
-```
-
-##### options.awsConfig
-This allows you to pass any [config properties allowed by the AWS Node.js SDK](http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-configuring.html)
-
-```javascript
-cfn({
-    name: 'Foo-Bar',
-    template: _dirname + '/template.js',
-    awsConfig: {
-        region: 'us-west-2'
-        accessKeyId: 'akid',
-        secretAccessKey: 'secret'
-    }
-}).then(function() {
-    console.log('done');
 });
 ```
 

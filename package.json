@@ -19,7 +19,9 @@
     "*.lock",
     "*.md"
   ],
-  "bin": "cli.js",
+  "bin": {
+    "simple-cfn": "./cli.js"
+  },
   "keywords": [
     "Cloud",
     "Formation",
