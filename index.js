@@ -81,7 +81,7 @@ let _config = {
   checkStackInterval: 5000
 }
 
-function Cfn (name, template) {
+function SimpleCfn (name, template) {
   let log = console.log
   let opts = _.isPlainObject(name) ? name : {}
   let awsOpts = {}
@@ -484,24 +484,24 @@ function Cfn (name, template) {
   }
 }
 
-var cfn = function (name, template) {
-  return new Cfn(name, template).createOrUpdate()
+var simpleCfn = function (name, template) {
+  return new SimpleCfn(name, template).createOrUpdate()
 }
 
-cfn.stackExists = function (name) {
-  return new Cfn(name).stackExists()
+simpleCfn.stackExists = function (name) {
+  return new SimpleCfn(name).stackExists()
 }
 
-cfn.create = function (name, template) {
-  return new Cfn(name, template).create()
+simpleCfn.create = function (name, template) {
+  return new SimpleCfn(name, template).create()
 }
 
-cfn.delete = function (name) {
-  return new Cfn(name).delete()
+simpleCfn.delete = function (name) {
+  return new SimpleCfn(name).delete()
 }
 
-cfn.validate = function (region, template, params) {
-  return new Cfn({
+simpleCfn.validate = function (region, template, params) {
+  return new SimpleCfn({
     template: template,
     params: params,
     awsConfig: {
@@ -510,22 +510,22 @@ cfn.validate = function (region, template, params) {
   }).validate()
 }
 
-cfn.outputs = function (name) {
-  return new Cfn(name).outputs()
+simpleCfn.outputs = function (name) {
+  return new SimpleCfn(name).outputs()
 }
 
-cfn.output = function (name, field) {
-  return new Cfn(name).output(field)
+simpleCfn.output = function (name, field) {
+  return new SimpleCfn(name).output(field)
 }
 
-cfn.cleanup = function (regex, daysOld, dryRun) {
-  return new Cfn().cleanup(regex, daysOld, dryRun)
+simpleCfn.cleanup = function (regex, daysOld, dryRun) {
+  return new SimpleCfn().cleanup(regex, daysOld, dryRun)
 }
 
-cfn.configure = function (cfg) {
+simpleCfn.configure = function (cfg) {
   _config = cfg
 }
 
-cfn.class = Cfn
+simpleCfn.class = SimpleCfn
 
-module.exports = cfn
+module.exports = simpleCfn

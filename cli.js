@@ -2,7 +2,7 @@
 'use strict'
 
 const os = require('os')
-const cfn = require('./')
+const simpleCfn = require('./')
 const _ = require('lodash')
 const chalk = require('chalk')
 const meow = require('meow')
@@ -47,7 +47,7 @@ const cmds = {
         console.log(`==========================${os.EOL}`)
       }
 
-      return cfn({ name, template, cfParams, capabilities })
+      return simpleCfn({ name, template, cfParams, capabilities })
     }
   },
 
@@ -55,7 +55,7 @@ const cmds = {
     args: 2,
     exec: () => {
       const name = cli.input[1]
-      return cfn.delete(name)
+      return simpleCfn.delete(name)
     }
   },
 
@@ -63,7 +63,7 @@ const cmds = {
     args: 2,
     exec: () => {
       const name = cli.input[1]
-      return cfn.outputs(name)
+      return simpleCfn.outputs(name)
         .then(JSON.stringify)
         .then(console.log)
     }
@@ -74,7 +74,7 @@ const cmds = {
     exec: () => {
       const name = cli.input[1]
       const field = cli.input[2]
-      return cfn.output(name, field)
+      return simpleCfn.output(name, field)
         .then(console.log)
     }
   }
