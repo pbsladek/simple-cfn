@@ -3,8 +3,6 @@
  * periodic polling to check stack status.  So that stack operations are
  * synchronous.
  */
-process.env.AWS_SDK_LOAD_CONFIG = 1
-
 const _ = require('lodash')
 const chalk = require('chalk')
 const YAML = require('yamljs')

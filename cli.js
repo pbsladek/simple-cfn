@@ -11,6 +11,9 @@ const Promise = require('bluebird')
 
 Promise.longStackTraces()
 
+// Allow SDK to search for configs ~/.aws/credentials
+process.env.AWS_SDK_LOAD_CONFIG = 1
+
 const cli = meow(`
   Usage
     simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--{param key}={param value}...]
