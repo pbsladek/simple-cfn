@@ -5,6 +5,8 @@ const should = require('should')
 require('./assertions')
 require('should-sinon')
 
+// process.env.AWS_SDK_LOAD_CONFIG = 1
+
 const AWS = require('aws-sdk-mock')
 
 const simpleCfn = require('../')

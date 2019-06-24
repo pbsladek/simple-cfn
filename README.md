@@ -7,14 +7,6 @@ simple-cfn makes the following AWS CloudFormation tasks simpler.
 * Can read parameters from json or yaml files.
 * Returns a Promise.  Resolves when stack Create / Update is done, Rejects if there is an error.
 
-##### Delete Stack
-* Monitors stack progress, logging events.
-* Returns a Promise.  Resolves when stack Create / Update is done, Rejects if there is an error.
-
-##### Cleanup Stacks
-* Use regex pattern to delete stacks.
-* Include `daysOld` to delete stacks this old.
-
 ##### Validate Templates
 * Checks if a template is valid
 * Returns a Promise.  Resolves when template is valid, Rejects if there is an error.
@@ -41,7 +33,6 @@ npm install simple-cfn --save-dev
     simple-cfn deploy {stack name} {template} [--{param key}={param value}...]
     simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--file=/path/to/file]
     simple-cfn check {template}
-    simple-cfn delete {stack name}
     simple-cfn outputs {stack name} {field name}
 
   Examples
@@ -49,7 +40,6 @@ npm install simple-cfn --save-dev
     simple-cfn deploy stack-name template.yml --ImageId=ami-828283 --VpcId=vpc-828283
     simple-cfn deploy stack-name template.yml --file=/home/parameters.yml
     simple-cfn check /home/parameters.yml
-    simple-cfn delete stack-name
     simple-cfn outputs stack-name field-name
 ```
 
@@ -90,28 +80,6 @@ cfn({
   checkStackInterval: 5000,
 });
 
-```
-
-### Delete
-Delete a stack.
-
-```javascript
-// Delete the Foo-Bar stack
-cfn.delete('Foo-Bar');
-```
-
-### Cleanup
-Cleanup stacks based on regex and daysOld.
-
-```javascript
-// Delete stacks starting with TEST- that are 3 days old or more
-cfn.cleanup({
-    regex: /TEST-/,
-    minutesOld: 60
-})
-    .then(function() {
-        console.log('done')
-    });
 ```
 
 ### Stack Exists

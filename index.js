@@ -24,8 +24,6 @@ AWS.config.setPromisesDependency(Promise)
 
 const PROXY = process.env.PROXY || process.env.https_proxy || process.env.http_proxy
 
-const ONE_MINUTE = 60000
-
 const success = [
   'CREATE_COMPLETE',
   'DELETE_COMPLETE',
@@ -392,14 +390,6 @@ function SimpleCfn (name, template) {
       })
   }
 
-  this.delete = function (overrideName) {
-    startedAt = Date.now()
-    return cf.deleteStack({ StackName: overrideName || name }).promise()
-      .then(function () {
-        return async ? Promise.resolve() : checkStack('delete', overrideName || name)
-      })
-  }
-
   this.validate = function () {
     return processTemplate(template)
       .then(function (templateObject) {
@@ -424,68 +414,6 @@ function SimpleCfn (name, template) {
         return data[field] || ''
       })
   }
-
-  this.cleanup = function (opts) {
-    const self = this
-    let regex = opts.regex
-    let minutesOld = opts.minutesOld
-    let dryRun = opts.dryRun
-    let async = opts.async
-    let limit = opts.limit
-    let next
-    let done = false
-    let stacks = []
-
-    startedAt = Date.now()
-    return (function loop () {
-      if (!done) {
-        return cf.listStacks({
-          NextToken: next,
-          StackStatusFilter: [
-            'CREATE_COMPLETE',
-            'CREATE_FAILED',
-            'DELETE_FAILED',
-            'ROLLBACK_COMPLETE',
-            'UPDATE_COMPLETE'
-
-          ]
-        }).promise()
-          .then(function (data) {
-            next = data.NextToken
-            done = !next
-            return data.StackSummaries
-          })
-          .each(function (stack) {
-            var millisOld = Date.now() - ((minutesOld || 0) * ONE_MINUTE)
-            if (regex.test(stack.StackName) && moment(stack.CreationTime).valueOf() < millisOld) {
-              stacks.push(stack)
-            }
-          })
-          .then(function () {
-            return loop()
-          })
-      }
-      return Promise.resolve()
-    })()
-      .then(function () {
-        var filteredStacks = _.sortBy(stacks, ['CreationTime'])
-
-        if (limit) {
-          filteredStacks = _.take(filteredStacks, limit)
-        }
-        _.forEach(filteredStacks, function (stack) {
-          if (dryRun) {
-            log('Will clean up ' + stack.StackName + ' Created ' + stack.CreationTime)
-          } else {
-            log('Cleaning up ' + stack.StackName + ' Created ' + stack.CreationTime)
-            return self.delete(stack.StackName, async)
-              .catch(function (err) {
-                log('DELETE ERROR: ', err)
-              })
-          }
-        })
-      })
-  }
 }
 
 var simpleCfn = function (name, template) {
@@ -498,10 +426,6 @@ simpleCfn.stackExists = function (name) {
 
 simpleCfn.create = function (name, template) {
   return new SimpleCfn(name, template).create()
-}
-
-simpleCfn.delete = function (name) {
-  return new SimpleCfn(name).delete()
 }
 
 simpleCfn.validate = function (template, params) {
@@ -517,10 +441,6 @@ simpleCfn.outputs = function (name) {
 
 simpleCfn.output = function (name, field) {
   return new SimpleCfn(name).output(field)
-}
-
-simpleCfn.cleanup = function (regex, daysOld, dryRun) {
-  return new SimpleCfn().cleanup(regex, daysOld, dryRun)
 }
 
 simpleCfn.configure = function (cfg) {

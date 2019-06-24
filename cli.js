@@ -19,7 +19,6 @@ const cli = meow(`
     simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--{param key}={param value}...]
     simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--file=/path/to/file]
     simple-cfn check {template}
-    simple-cfn delete {stack name}
     simple-cfn outputs {stack name}
     simple-cfn output {stack name} {field name}
 
@@ -28,7 +27,6 @@ const cli = meow(`
     simple-cfn deploy stack-name template.yml --ImageId=ami-828283 --VpcId=vpc-828283 --capability=CAPABILITY_NAMED_IAM --capability=CAPABILITY_AUTO_EXPAND
     simple-cfn deploy stack-name template.yml --file=/home/parameters.yml
     simple-cfn check /home/parameters.yml
-    simple-cfn delete stack-name
     simple-cfn outputs stack-name
     simple-cfn output stack-name field-name
 `)
@@ -70,14 +68,6 @@ const cmds = {
       }
 
       return simpleCfn({ name, template, cfParams, capabilities })
-    }
-  },
-
-  delete: {
-    args: 2,
-    exec: () => {
-      const name = cli.input[1]
-      return simpleCfn.delete(name)
     }
   },
 
