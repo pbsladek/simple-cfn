@@ -61,7 +61,7 @@
   },
   "devDependencies": {
     "aws-sdk-mock": "^4.4.0",
-    "coveralls": "^3.0.4",
+    "coveralls": "^3.0.6",
     "mocha": "^6.1.4",
     "nyc": "^14.1.1",
     "should": "^13.2.3",
