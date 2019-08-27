@@ -31,7 +31,7 @@ module.exports = function (params) {
           ],
           ProvisionedThroughput: {
             ReadCapacityUnits: {
-              'Ref': 'readCap'
+              Ref: 'readCap'
             },
             WriteCapacityUnits: '1'
           },

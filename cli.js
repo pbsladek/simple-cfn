@@ -52,7 +52,7 @@ const cmds = {
         console.log(`==========================${os.EOL}`)
 
         if (fs.existsSync(filePath)) {
-          let parsedParams = fs.readFileSync(filePath, 'utf8')
+          const parsedParams = fs.readFileSync(filePath, 'utf8')
           cfParams = parsedParams.toString()
         } else {
           return Promise.reject(new Error(chalk.red(`${filePath} does not exist. Please double check the path specified via --file.`)))

@@ -79,17 +79,17 @@ let _config = {
 }
 
 function SimpleCfn (name, template) {
-  let log = console.log
-  let opts = _.isPlainObject(name) ? name : {}
-  let awsOpts = {}
+  const log = console.log
+  const opts = _.isPlainObject(name) ? name : {}
+  const awsOpts = {}
   let startedAt = Date.now()
-  let params = opts.params
-  let cfParams = opts.cfParams || {}
-  let awsConfig = opts.awsConfig
-  let capabilities = opts.capabilities || ['CAPABILITY_IAM', 'CAPABILITY_NAMED_IAM']
-  let tags = opts.tags || {}
-  let async = opts.async
-  let checkStackInterval = opts.checkStackInterval || _config.checkStackInterval
+  const params = opts.params
+  const cfParams = opts.cfParams || {}
+  const awsConfig = opts.awsConfig
+  const capabilities = opts.capabilities || ['CAPABILITY_IAM', 'CAPABILITY_NAMED_IAM']
+  const tags = opts.tags || {}
+  const async = opts.async
+  const checkStackInterval = opts.checkStackInterval || _config.checkStackInterval
 
   if (PROXY) {
     awsOpts.httpOptions = {
@@ -101,7 +101,7 @@ function SimpleCfn (name, template) {
   }
 
   // initialize cf
-  let cf = new AWS.CloudFormation(awsOpts)
+  const cf = new AWS.CloudFormation(awsOpts)
 
   name = opts.name || name
   template = opts.template || template
@@ -110,10 +110,10 @@ function SimpleCfn (name, template) {
     const logPrefix = name + ' ' + action.toUpperCase()
     const notExists = /ValidationError:\s+Stack\s+\[?.+]?\s+does not exist/
     const throttling = /Throttling:\s+Rate\s+exceeded/
-    let displayedEvents = {}
+    const displayedEvents = {}
 
     return new Promise(function (resolve, reject) {
-      let interval
+      let interval = 0
       let running = false
 
       // on success:
@@ -202,7 +202,7 @@ function SimpleCfn (name, template) {
       }
 
       function outputNewStackEvents () {
-        let events = []
+        const events = []
 
         if (running) {
           return
@@ -259,9 +259,9 @@ function SimpleCfn (name, template) {
   }
 
   function loadJs (path) {
-    let tmpl = require(path)
+    const tmpl = require(path)
 
-    let fn = _.isFunction(tmpl) ? tmpl : function () {
+    const fn = _.isFunction(tmpl) ? tmpl : function () {
       return tmpl
     }
     return Promise.resolve(JSON.stringify(fn(params)))
@@ -283,10 +283,10 @@ function SimpleCfn (name, template) {
 
     return cf.getTemplateSummary(templateObject).promise()
       .then(data => {
-        let templateParams = data.Parameters || []
+        const templateParams = data.Parameters || []
         return templateParams.map(p => {
-          let k = _.toLower(p.ParameterKey)
-          let v = params[k]
+          const k = _.toLower(p.ParameterKey)
+          const v = params[k]
           return {
             ParameterKey: p.ParameterKey,
             ParameterValue: v || p.DefaultValue

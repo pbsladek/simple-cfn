@@ -39,8 +39,8 @@ var cfStackEventFactory = function cfStackEventFactory (opts) {
 }
 
 var resourceStatusOpts = {
-  UPDATE_COMPLETE: { 'ResourceStatus': 'UPDATE_COMPLETE' },
-  UPDATE_IN_PROGRESS: { 'ResourceStatus': 'UPDATE_IN_PROGRESS' }
+  UPDATE_COMPLETE: { ResourceStatus: 'UPDATE_COMPLETE' },
+  UPDATE_IN_PROGRESS: { ResourceStatus: 'UPDATE_IN_PROGRESS' }
 }
 
 var mockEvents = {
