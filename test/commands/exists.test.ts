@@ -3,15 +3,15 @@ import {expect, test} from '@oclif/test'
 describe('exists', () => {
   test
   .stdout()
-  .command(['exists'])
-  .it('runs hello', ctx => {
-    expect(ctx.stdout).to.contain('hello world')
+  .command(['exists', 'stack-name'])
+  .it('', ctx => {
+    expect(ctx.stdout).to.contain('')
   })
 
   test
   .stdout()
-  .command(['exists', '--name', 'jeff'])
-  .it('runs hello --name jeff', ctx => {
-    expect(ctx.stdout).to.contain('hello jeff')
+  .command(['exists', 'stack-name'])
+  .it('', ctx => {
+    expect(ctx.stdout).to.contain('')
   })
 })

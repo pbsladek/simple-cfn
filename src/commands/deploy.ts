@@ -1,29 +1,34 @@
-import {Command, flags} from '@oclif/command'
+import { Command, flags } from '@oclif/command'
 
 export default class Deploy extends Command {
-    static description = 'deploy cf something'
+  static description = 'Deploy and update stacks'
 
-    static examples = [
-      '$ simple-cfn deploy stuff and things',
-    ]
+  static examples = [
+    '$ simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--file=/path/to/file]',
+  ]
 
-    static flags = {
-      help: flags.help({char: 'h'}),
-      // flag with a value (-n, --name=VALUE)
-      name: flags.string({char: 'n', description: 'name to print'}),
-      // flag with no value (-f, --force)
-      force: flags.boolean({char: 'f'}),
-    }
+  static flags = {
+    help: flags.help({ char: 'h' }),
+    file: flags.string({ char: 'f', description: 'path to parameter file' }),
+    capability: flags.string({ char: 'c', description: 'capability' }),
+  }
 
-    static args = [{name: 'file'}]
+  static args = [
+    { name: 'stack', required: true, description: 'stack name' },
+    { name: 'template', required: true, description: 'template path' },
+  ]
 
-    async run() {
-      const {args, flags} = this.parse(Deploy)
+  async run() {
+    const { args, flags } = this.parse(Deploy)
 
-      const name = flags.name || 'world'
-      this.log(`hello ${name} from ./src/commands/deploy.ts`)
-      if (args.file && flags.force) {
-        this.log(`you input --force and --file: ${args.file}`)
-      }
-    }
+    const stack = args.stack || ''
+    const template = args.template || ''
+    const file = flags.file || ''
+    const capability = flags.capability || ''
+
+    console.log(file)
+    console.log(stack)
+    console.log(template)
+    console.log(capability)
+  }
 }

@@ -16,7 +16,7 @@ install:
 
 build_script:
   - yarn prepack
-  - yarn pack
+  - yarn dist
   - yarn version
 
 test_script:
