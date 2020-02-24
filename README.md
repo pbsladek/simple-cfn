@@ -1,4 +1,4 @@
-# simple-cfn [![Build status](https://ci.appveyor.com/api/projects/status/n65me3x0p3wulp7n/branch/master?svg=true)](https://ci.appveyor.com/project/pbsladek/simple-cfn/branch/oclif)
+# simple-cfn [![Build status](https://ci.appveyor.com/api/projects/status/n65me3x0p3wulp7n/branch/oclif?svg=true)](https://ci.appveyor.com/project/pbsladek/simple-cfn/branch/oclif)
 
 simple-cfn makes the following AWS CloudFormation tasks simpler.
 
