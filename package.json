@@ -1,7 +1,7 @@
 {
   "name": "simple-cfn",
   "description": "Simple CloudFormation wrapper for Node.js ",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "Paul Sladek @pbsladek",
   "bin": {
     "simple-cfn": "./bin/run"
@@ -54,7 +54,13 @@
     ],
     "update": {
       "s3": {
-        "bucket": "pbsladek-simple-cfn"
+        "bucket": "pbsladek-simple-cfn",
+        "acl": "private"
+      },
+      "updateConfig": {
+        "node": {
+          "targets": "linux-arm,linux-armv7l,linux-x64,linux-s390x,darwin-x64"
+        }
       }
     }
   },
@@ -62,8 +68,10 @@
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest",
+    "lint": "eslint . --ext .ts --config .eslintrc",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "dist": "oclif-dev pack -t linux-arm,linux-armv7l,linux-x64,linux-s390x,darwin-x64",
+    "dist": "oclif-dev pack --xz -t linux-arm,linux-armv7l,linux-x64,linux-s390x,darwin-x64",
+    "pub": "oclif-dev publish",
     "version": "oclif-dev readme"
   },
   "types": "lib/index.d.ts"
