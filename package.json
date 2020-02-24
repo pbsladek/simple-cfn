@@ -8,6 +8,7 @@
   },
   "bugs": "https://github.com/pbsladek/simple-cfn/issues",
   "dependencies": {
+    "@aws-sdk/client-cloudformation": "1.0.0-alpha.15",
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.14.0",
     "@oclif/plugin-help": "^2.2.3",
@@ -54,7 +55,7 @@
   "repository": "pbsladek/simple-cfn",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
-    "posttest": "eslint . --ext .ts --config .eslintrc",
+    "posttest": "eslint . --ext .ts --config .eslintrc --fix",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
