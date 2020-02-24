@@ -1,4 +1,8 @@
-import { Command, flags } from '@oclif/command'
+import {Command, flags} from '@oclif/command'
+import {
+  CloudFormationClient,
+  ListStacksCommand,
+} from '@aws-sdk/client-cloudformation-node'
 
 export default class Deploy extends Command {
   static description = 'Deploy and update stacks'
@@ -8,27 +12,32 @@ export default class Deploy extends Command {
   ]
 
   static flags = {
-    help: flags.help({ char: 'h' }),
-    file: flags.string({ char: 'f', description: 'path to parameter file' }),
-    capability: flags.string({ char: 'c', description: 'capability' }),
+    help: flags.help({char: 'h'}),
+    file: flags.string({char: 'f', description: 'path to parameter file'}),
+    capability: flags.string({char: 'c', description: 'capability'}),
   }
 
   static args = [
-    { name: 'stack', required: true, description: 'stack name' },
-    { name: 'template', required: true, description: 'template path' },
+    {name: 'stack', required: true, description: 'stack name'},
+    {name: 'template', required: true, description: 'template path'},
   ]
 
   async run() {
-    const { args, flags } = this.parse(Deploy)
+    const {args, flags} = this.parse(Deploy)
 
     const stack = args.stack || ''
     const template = args.template || ''
     const file = flags.file || ''
     const capability = flags.capability || ''
 
-    console.log(file)
-    console.log(stack)
-    console.log(template)
-    console.log(capability)
+    const client = new CloudFormationClient({region: 'us-west-2'})
+    const input = {}
+    const command = new ListStacksCommand(input)
+    try {
+      const results = await client.send(command)
+      console.error(results)
+    } catch (err) {
+      console.error(err)
+    }
   }
 }
