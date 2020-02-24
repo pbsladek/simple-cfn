@@ -1,0 +1,21 @@
+version: 1.0.{build}
+
+environment:
+  nodejs_version: "13"
+
+branches:
+  only:
+    - master
+
+build:
+  verbosity: minimal
+
+install:
+  - ps: Install-Product node $env:nodejs_version x64
+  - yarn
+
+build_script:
+  - yarn prepack
+
+test_script:
+  - yarn test
