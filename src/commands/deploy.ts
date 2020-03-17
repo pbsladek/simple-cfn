@@ -2,7 +2,7 @@ import {Command, flags} from '@oclif/command'
 import {
   CloudFormationClient,
   UpdateStackCommand,
-  UpdateStackInput,
+  DescribeStacksCommand,
   CreateStackCommand,
 } from '@aws-sdk/client-cloudformation-node'
 import {readFileSync} from 'fs'
@@ -28,6 +28,7 @@ export default class Deploy extends Command {
 
   async run() {
     const {args, flags} = this.parse(Deploy)
+    const client = new CloudFormationClient({region: 'us-west-2'})
 
     const stack = args.stack || ''
     const template = args.template || ''
@@ -53,36 +54,51 @@ export default class Deploy extends Command {
       }
     }
 
-    // Create stack
-    const input = {
+    // Check if the stack exists in the current region
+    // Will need to handle pagination here
+    // Split all this out more.
+    const describeStackInput = {
       StackName: stack,
-      TemplateBody: fileData,
-      Parameters: params,
     }
 
-    const client = new CloudFormationClient({region: 'us-west-2'})
-    const command = new CreateStackCommand(input)
+    let found = true
+    const describeCommand = new DescribeStacksCommand(describeStackInput)
     try {
-      const results = await client.send(command)
-      console.error(results)
+      await client.send(describeCommand)
     } catch (err) {
-      console.error(err)
+      found = false
     }
 
-    // Update stack
-    const input = {
-      StackName: stack,
-      TemplateBody: fileData,
-      Parameters: params,
-    }
+    if (found) {
+      // Update stack
+      const updateInput = {
+        StackName: stack,
+        TemplateBody: fileData,
+        Parameters: params,
+      }
 
-    const client = new CloudFormationClient({region: 'us-west-2'})
-    const command = new UpdateStackCommand(input)
-    try {
-      const results = await client.send(command)
-      console.error(results)
-    } catch (err) {
-      console.error(err)
+      const updateCommand = new UpdateStackCommand(updateInput)
+      try {
+        const results = await client.send(updateCommand)
+        console.error(results)
+      } catch (err) {
+        console.error(err)
+      }
+    } else {
+      // Create stack
+      const createInput = {
+        StackName: stack,
+        TemplateBody: fileData,
+        Parameters: params,
+      }
+
+      const createCommand = new CreateStackCommand(createInput)
+      try {
+        const results = await client.send(createCommand)
+        console.error(results)
+      } catch (err) {
+        console.error(err)
+      }
     }
   }
 }
