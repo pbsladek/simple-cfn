@@ -1,8 +1,12 @@
 import {Command, flags} from '@oclif/command'
 import {
   CloudFormationClient,
-  ListStacksCommand,
+  UpdateStackCommand,
+  UpdateStackInput,
+  CreateStackCommand,
 } from '@aws-sdk/client-cloudformation-node'
+import {readFileSync} from 'fs'
+import {safeLoad} from 'js-yaml'
 
 export default class Deploy extends Command {
   static description = 'Deploy and update stacks'
@@ -30,9 +34,50 @@ export default class Deploy extends Command {
     const file = flags.file || ''
     const capability = flags.capability || ''
 
+    const fileData = readFileSync(template, 'utf8')
+
+    let parameters
+    try {
+      parameters = safeLoad(readFileSync(file, 'utf8'))
+    } catch (err) {
+      console.log(err)
+    }
+
+    const params = []
+    for (const key in parameters) {
+      if (Object.prototype.hasOwnProperty.call(parameters, key)) {
+        params.push({
+          ParameterKey: key,
+          ParameterValue: parameters[key],
+        })
+      }
+    }
+
+    // Create stack
+    const input = {
+      StackName: stack,
+      TemplateBody: fileData,
+      Parameters: params,
+    }
+
     const client = new CloudFormationClient({region: 'us-west-2'})
-    const input = {}
-    const command = new ListStacksCommand(input)
+    const command = new CreateStackCommand(input)
+    try {
+      const results = await client.send(command)
+      console.error(results)
+    } catch (err) {
+      console.error(err)
+    }
+
+    // Update stack
+    const input = {
+      StackName: stack,
+      TemplateBody: fileData,
+      Parameters: params,
+    }
+
+    const client = new CloudFormationClient({region: 'us-west-2'})
+    const command = new UpdateStackCommand(input)
     try {
       const results = await client.send(command)
       console.error(results)
