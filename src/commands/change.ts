@@ -2,10 +2,10 @@ import {Command, flags} from '@oclif/command'
 import {
   CloudFormationClient,
   CreateChangeSetCommand,
-  DescribeStacksCommand,
 } from '@aws-sdk/client-cloudformation-node'
 import {readFileSync} from 'fs'
-import {safeLoad} from 'js-yaml'
+import {createHash, randomBytes} from 'crypto'
+import * as util from '../lib/util'
 
 export default class Change extends Command {
   static description = 'Create and deploy change sets'
@@ -32,39 +32,34 @@ export default class Change extends Command {
     const stack = args.stack || ''
     const template = args.template || ''
     const file = flags.file || ''
-    const capability = flags.capability || ''
+    // const capability = flags.capability || ''
 
     const fileData = readFileSync(template, 'utf8')
+    const params = util.readParametersFile(file)
 
-    let parameters
-    try {
-      parameters = safeLoad(readFileSync(file, 'utf8'))
-    } catch (err) {
-      console.log(err)
-    }
+    // A change set name can contain only alphanumeric, case sensitive characters and hyphens.
+    // It must start with an alphabetic character and cannot exceed 128 characters.
+    const buf = randomBytes(20)
+    const changeSetName = 'csn-' + createHash('sha1')
+    .update(buf)
+    .digest('hex')
 
-    const params = []
-    for (const key in parameters) {
-      if (Object.prototype.hasOwnProperty.call(parameters, key)) {
-        params.push({
-          ParameterKey: key,
-          ParameterValue: parameters[key],
-        })
-      }
-    }
+    this.log(`Generated change set name: ${changeSetName}`)
 
     const createChangeSetInput = {
       StackName: stack,
       TemplateBody: fileData,
       Parameters: params,
-      ChangeSetName: 'random-name',
+      ChangeSetName: changeSetName,
     }
 
     const createChangeSet = new CreateChangeSetCommand(createChangeSetInput)
     try {
-      const results = await client.send(createChangeSet)
-    } catch (err) {
-      console.error(err)
+      await client.send(createChangeSet)
+    } catch (error) {
+      this.error(error)
     }
+
+    this.log(results)
   }
 }

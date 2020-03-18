@@ -1,16 +1,7 @@
+import {CloudFormationClient, ValidateTemplateCommand} from '@aws-sdk/client-cloudformation-node'
 import {Command, flags} from '@oclif/command'
-import {
-  CloudFormationClient,
-  ValidateTemplateCommand,
-} from '@aws-sdk/client-cloudformation-node'
-import {readFileSync} from 'fs'
 import {spawnSync} from 'child_process'
-
-// TODO Handle remote S3 files
-// function isUriTemplate(template: string) {
-//   const httpsUri = /https:\/\/s3.+amazonaws.com/
-//   return httpsUri.test(template)
-// }
+import {readFileSync} from 'fs'
 
 export default class Check extends Command {
   static description = 'Run validation on templates'
@@ -41,7 +32,7 @@ export default class Check extends Command {
 
     if (cfnLint) {
       const result = spawnSync('cfn-lint', [template])
-      console.log(result.stdout.toString())
+      this.log(result.stdout.toString())
     }
 
     const input = {
@@ -52,8 +43,8 @@ export default class Check extends Command {
     const command = new ValidateTemplateCommand(input)
     try {
       await client.send(command)
-    } catch (err) {
-      console.error(err.message)
+    } catch (error) {
+      this.error(err.message)
     }
   }
 }

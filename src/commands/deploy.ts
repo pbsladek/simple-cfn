@@ -1,12 +1,8 @@
+import {CloudFormationClient, CreateStackCommand, DescribeStacksCommand, UpdateStackCommand} from '@aws-sdk/client-cloudformation-node'
 import {Command, flags} from '@oclif/command'
-import {
-  CloudFormationClient,
-  UpdateStackCommand,
-  DescribeStacksCommand,
-  CreateStackCommand,
-} from '@aws-sdk/client-cloudformation-node'
 import {readFileSync} from 'fs'
-import {safeLoad} from 'js-yaml'
+
+import * as util from '../lib/util'
 
 export default class Deploy extends Command {
   static description = 'Deploy and update stacks'
@@ -33,29 +29,11 @@ export default class Deploy extends Command {
     const stack = args.stack || ''
     const template = args.template || ''
     const file = flags.file || ''
-    const capability = flags.capability || ''
+    // const capability = flags.capability || ''
 
     const fileData = readFileSync(template, 'utf8')
+    const params = util.readParametersFile(file)
 
-    let parameters
-    try {
-      parameters = safeLoad(readFileSync(file, 'utf8'))
-    } catch (err) {
-      console.log(err)
-    }
-
-    const params = []
-    for (const key in parameters) {
-      if (Object.prototype.hasOwnProperty.call(parameters, key)) {
-        params.push({
-          ParameterKey: key,
-          ParameterValue: parameters[key],
-        })
-      }
-    }
-
-    // Check if the stack exists in the current region
-    // Will need to handle pagination here
     // Split all this out more.
     const describeStackInput = {
       StackName: stack,
@@ -65,7 +43,7 @@ export default class Deploy extends Command {
     const describeCommand = new DescribeStacksCommand(describeStackInput)
     try {
       await client.send(describeCommand)
-    } catch (err) {
+    } catch (error) {
       found = false
     }
 
@@ -80,9 +58,9 @@ export default class Deploy extends Command {
       const updateCommand = new UpdateStackCommand(updateInput)
       try {
         const results = await client.send(updateCommand)
-        console.error(results)
-      } catch (err) {
-        console.error(err)
+        this.error(results)
+      } catch (error) {
+        this.error(error)
       }
     } else {
       // Create stack
@@ -95,9 +73,9 @@ export default class Deploy extends Command {
       const createCommand = new CreateStackCommand(createInput)
       try {
         const results = await client.send(createCommand)
-        console.error(results)
-      } catch (err) {
-        console.error(err)
+        this.error(results)
+      } catch (error) {
+        this.error(error)
       }
     }
   }

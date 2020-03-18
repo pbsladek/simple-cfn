@@ -1,3 +1,4 @@
+import {CloudFormationClient, DescribeStacksCommand} from '@aws-sdk/client-cloudformation-node'
 import {Command, flags} from '@oclif/command'
 
 export default class Exists extends Command {
@@ -16,10 +17,21 @@ export default class Exists extends Command {
   ]
 
   async run() {
-    const {args, flags} = this.parse(Exists)
+    const {args} = this.parse(Exists)
+    const client = new CloudFormationClient({region: 'us-west-2'})
 
     const stack = args.stack || ''
 
-    console.log(stack)
+    const describeStackInput = {
+      StackName: stack,
+    }
+
+    const describeCommand = new DescribeStacksCommand(describeStackInput)
+    try {
+      const results = await client.send(describeCommand)
+      this.log(results.Stacks?.join('\n'))
+    } catch (error) {
+      this.log(error.message)
+    }
   }
 }

@@ -22,18 +22,19 @@ export default class Search extends Command {
 
   async run() {
     const {args, flags} = this.parse(Search)
+    const client = new CloudFormationClient({region: 'us-west-2'})
 
     const query = flags.query || ''
     const stack = args.stack || ''
 
-    const input = {}
-    const client = new CloudFormationClient({region: 'us-west-2'})
-    const command = new ListStacksCommand(input)
+    const listStackInput = {
+      StackStatusFilter: 'CREATE_IN_PROGRESS',
+    }
+    const command = new ListStacksCommand(listStackInput)
     try {
       const results = await client.send(command)
-      console.error(results)
-    } catch (err) {
-      console.error(err)
+    } catch (error) {
+      this.error(error)
     }
   }
 }
