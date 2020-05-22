@@ -27,7 +27,7 @@ export default class Change extends Command {
 
   async run() {
     const {args, flags} = this.parse(Change)
-    const client = new CloudFormationClient({region: 'us-west-2'})
+    const client = new CloudFormationClient({})
 
     const stack = args.stack || ''
     const template = args.template || ''
@@ -55,11 +55,10 @@ export default class Change extends Command {
 
     const createChangeSet = new CreateChangeSetCommand(createChangeSetInput)
     try {
-      await client.send(createChangeSet)
+      const results = await client.send(createChangeSet)
+      this.log(results.StackId)
     } catch (error) {
       this.error(error)
     }
-
-    this.log(results)
   }
 }

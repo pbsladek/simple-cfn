@@ -22,7 +22,7 @@ export default class Search extends Command {
 
   async run() {
     const {args, flags} = this.parse(Search)
-    const client = new CloudFormationClient({region: 'us-west-2'})
+    const client = new CloudFormationClient({})
 
     const query = flags.query || ''
     const stack = args.stack || ''
@@ -33,6 +33,7 @@ export default class Search extends Command {
     const command = new ListStacksCommand(listStackInput)
     try {
       const results = await client.send(command)
+      console.log(results.StackSummaries?.join('\n'))
     } catch (error) {
       this.error(error)
     }

@@ -44,7 +44,7 @@ export default class Check extends Command {
     try {
       await client.send(command)
     } catch (error) {
-      this.error(err.message)
+      this.error(error.message)
     }
   }
 }

@@ -24,7 +24,7 @@ export default class Deploy extends Command {
 
   async run() {
     const {args, flags} = this.parse(Deploy)
-    const client = new CloudFormationClient({region: 'us-west-2'})
+    const client = new CloudFormationClient({})
 
     const stack = args.stack || ''
     const template = args.template || ''
@@ -73,7 +73,7 @@ export default class Deploy extends Command {
       const createCommand = new CreateStackCommand(createInput)
       try {
         const results = await client.send(createCommand)
-        this.error(results)
+        this.log(results.StackId)
       } catch (error) {
         this.error(error)
       }

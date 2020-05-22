@@ -18,7 +18,8 @@ export default class Exists extends Command {
 
   async run() {
     const {args} = this.parse(Exists)
-    const client = new CloudFormationClient({region: 'us-west-2'})
+    const client = new CloudFormationClient({})
+    const region = await client.config.region()
 
     const stack = args.stack || ''
 
@@ -29,7 +30,11 @@ export default class Exists extends Command {
     const describeCommand = new DescribeStacksCommand(describeStackInput)
     try {
       const results = await client.send(describeCommand)
-      this.log(results.Stacks?.join('\n'))
+      const result = results.Stacks?.pop()
+
+      if (result?.StackName === stack) {
+        this.log(`Stack ${result?.StackName} exists in region ${region}`)
+      }
     } catch (error) {
       this.log(error.message)
     }

@@ -2,10 +2,10 @@ import {CloudFormationClient, DescribeStacksCommand} from '@aws-sdk/client-cloud
 import {Command, flags} from '@oclif/command'
 
 export default class Output extends Command {
-  static description = 'Retrieve stacks outputs'
+  static description = 'Describe stacks'
 
   static examples = [
-    '$ simple-cfn deploy {stack name} [--query=\'dev\']',
+    '$ simple-cfn describe {stack name}',
   ]
 
   static flags = {
@@ -18,25 +18,21 @@ export default class Output extends Command {
   ]
 
   async run() {
-    const {args, flags} = this.parse(Output)
+    const {args} = this.parse(Output)
     const client = new CloudFormationClient({})
 
-    const query = flags.query || ''
     const stack = args.stack || ''
 
-    // Check if the stack exists in the current region
-    // Will need to handle pagination here
-    // Split all this out more.
     const describeStackInput = {
       StackName: stack,
     }
 
     const describeCommand = new DescribeStacksCommand(describeStackInput)
     try {
-      const results = await client.send(describeCommand)
-      this.log(results.Stacks?.join('\n'))
+      const result = await client.send(describeCommand)
+      this.log(result.Stacks?.join('\n'))
     } catch (error) {
-      this.log(error)
+      this.log(error.message)
     }
   }
 }
