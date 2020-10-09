@@ -78,7 +78,7 @@ let _config = {
   checkStackInterval: 5000
 }
 
-function SimpleCfn (name, template) {
+function SimpleCfn(name, template) {
   const log = console.log
   const opts = _.isPlainObject(name) ? name : {}
   const awsOpts = {}
@@ -106,7 +106,7 @@ function SimpleCfn (name, template) {
   name = opts.name || name
   template = opts.template || template
 
-  function checkStack (action, name) {
+  function checkStack(action, name) {
     const logPrefix = name + ' ' + action.toUpperCase()
     const notExists = /ValidationError:\s+Stack\s+\[?.+]?\s+does not exist/
     const throttling = /Throttling:\s+Rate\s+exceeded/
@@ -119,7 +119,7 @@ function SimpleCfn (name, template) {
       // on success:
       // 1. clear interval
       // 2. return resolved promise
-      function _success () {
+      function _success() {
         clearInterval(interval)
         return resolve()
       }
@@ -128,13 +128,13 @@ function SimpleCfn (name, template) {
       // 1. build fail message
       // 2. clear interval
       // 3. return rejected promise with failed message
-      function _failure (msg) {
+      function _failure(msg) {
         const fullMsg = logPrefix + ' Failed' + (msg ? ': ' + msg : '')
         clearInterval(interval)
         return reject(new Error(fullMsg))
       }
 
-      function _processEvents (events) {
+      function _processEvents(events) {
         events = _.sortBy(events, 'Timestamp')
         _.forEach(events, function (event) {
           displayedEvents[event.EventId] = true
@@ -174,11 +174,11 @@ function SimpleCfn (name, template) {
       }
 
       // provides all pagination
-      function getAllStackEvents (stackName) {
+      function getAllStackEvents(stackName) {
         let next
         let allEvents = []
 
-        function getStackEvents () {
+        function getStackEvents() {
           return cf.describeStackEvents({
             StackName: stackName,
             NextToken: next
@@ -197,11 +197,11 @@ function SimpleCfn (name, template) {
 
       // events are loaded sorted by timestamp desc (newest events first)
       // if we try to load all events we can easily run into throttling by aws api
-      function allRelevantEventsLoaded (events) {
+      function allRelevantEventsLoaded(events) {
         return events.some(event => moment(event.Timestamp).valueOf() < startedAt)
       }
 
-      function outputNewStackEvents () {
+      function outputNewStackEvents() {
         const events = []
 
         if (running) {
@@ -243,7 +243,7 @@ function SimpleCfn (name, template) {
     })
   }
 
-  function processCfStack (action, cfparms) {
+  function processCfStack(action, cfparms) {
     startedAt = Date.now()
     if (action === 'update') {
       return cf.updateStack(cfparms).promise()
@@ -258,7 +258,7 @@ function SimpleCfn (name, template) {
     return cf.createStack(cfparms).promise()
   }
 
-  function loadJs (path) {
+  function loadJs(path) {
     const tmpl = require(path)
 
     const fn = _.isFunction(tmpl) ? tmpl : function () {
@@ -267,9 +267,12 @@ function SimpleCfn (name, template) {
     return Promise.resolve(JSON.stringify(fn(params)))
   }
 
-  function normalizeParams (templateObject, params) {
-    if (isYAMLString(params)) {
+  function normalizeParams(templateObject, params) {
+
+    try {
       params = YAML.parse(params)
+    } catch (error) {
+      console.log(error)
     }
 
     if (!params) return Promise.resolve([])
@@ -286,16 +289,16 @@ function SimpleCfn (name, template) {
         const templateParams = data.Parameters || []
         return templateParams.map(p => {
           const k = _.toLower(p.ParameterKey)
-          const v = params[k]
+          const v = params.hasOwnProperty(k) ? String(params[k]) : undefined
           return {
             ParameterKey: p.ParameterKey,
-            ParameterValue: v || p.DefaultValue
+            ParameterValue: v !== undefined ? v : p.DefaultValue
           }
         })
       })
   }
 
-  function convertTags () {
+  function convertTags() {
     if (!_.isPlainObject(tags)) return []
     return (Object.keys(tags)).map(function (key) {
       return {
@@ -305,35 +308,37 @@ function SimpleCfn (name, template) {
     })
   }
 
-  function isStringOfType (type, str) {
+  function isStringOfType(type, str) {
     let result = true
     try {
       type.parse(str)
     } catch (ignore) {
+      // console.log(ignore)
       result = false
     }
+
     return result
   }
 
-  function isJSONString (str) {
+  function isJSONString(str) {
     return isStringOfType(JSON, str)
   }
 
-  function isYAMLString (str) {
+  function isYAMLString(str) {
     return isStringOfType(YAML, str) && str.split(/\r\n|\r|\n/).length > 1
   }
 
-  function isValidTemplateString (str) {
+  function isValidTemplateString(str) {
     return isJSONString(str) || isYAMLString(str)
   }
 
-  function templateBodyObject (template) {
+  function templateBodyObject(template) {
     return {
       TemplateBody: template
     }
   }
 
-  function processTemplate (template) {
+  function processTemplate(template) {
     // Check if template is located in S3
     if (isUriTemplate(template)) return Promise.resolve({ TemplateURL: template })
 
@@ -350,12 +355,12 @@ function SimpleCfn (name, template) {
     return fs.readFileAsync(template, 'utf8').then(templateBodyObject)
   }
 
-  function isUriTemplate (template) {
+  function isUriTemplate(template) {
     const httpsUri = /https:\/\/s3.+amazonaws.com/
     return httpsUri.test(template)
   }
 
-  function processStack (action, name, template) {
+  function processStack(action, name, template) {
     return processTemplate(template)
       .then(templateObject => {
         return normalizeParams(templateObject, cfParams)

@@ -54,6 +54,8 @@ const cmds = {
         if (fs.existsSync(filePath)) {
           const parsedParams = fs.readFileSync(filePath, 'utf8')
           cfParams = parsedParams.toString()
+          console.log("HERE PARAMS")
+          console.log(cfParams)
         } else {
           return Promise.reject(new Error(chalk.red(`${filePath} does not exist. Please double check the path specified via --file.`)))
         }

@@ -4,6 +4,9 @@
   "Parameters": {
     "TableName": {
       "Type": "String"
+    },
+    "ClusterSize": {
+      "Type": "Number"
     }
   },
   "Resources": {
