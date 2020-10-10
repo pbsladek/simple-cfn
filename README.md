@@ -32,6 +32,7 @@ npm install simple-cfn --save-dev
   Usage
     simple-cfn deploy {stack name} {template} [--{param key}={param value}...]
     simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--file=/path/to/file]
+    simple-cfn changeset {stack name} {template} [--capability=CAPABILITY] [--file=/path/to/file]
     simple-cfn check {template}
     simple-cfn outputs {stack name} {field name}
 
@@ -39,6 +40,7 @@ npm install simple-cfn --save-dev
     simple-cfn deploy stack-name template.js
     simple-cfn deploy stack-name template.yml --ImageId=ami-828283 --VpcId=vpc-828283
     simple-cfn deploy stack-name template.yml --file=/home/parameters.yml
+    simple-cfn changeset stack-name template.yml --file=/home/parameters.yml
     simple-cfn check /home/parameters.yml
     simple-cfn outputs stack-name field-name
 ```

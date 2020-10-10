@@ -112,6 +112,9 @@ function SimpleCfn(name, template) {
     const throttling = /Throttling:\s+Rate\s+exceeded/
     const displayedEvents = {}
 
+    console.log(logPrefix)
+    console.log(action)
+
     return new Promise(function (resolve, reject) {
       let interval = 0
       let running = false
@@ -120,6 +123,7 @@ function SimpleCfn(name, template) {
       // 1. clear interval
       // 2. return resolved promise
       function _success() {
+        console.log("here")
         clearInterval(interval)
         return resolve()
       }
@@ -243,10 +247,28 @@ function SimpleCfn(name, template) {
     })
   }
 
-  function processCfStack(action, cfparms) {
+  function processCfStack(action, cfParams) {
     startedAt = Date.now()
+
     if (action === 'update') {
-      return cf.updateStack(cfparms).promise()
+
+      return cf.updateStack(cfParams).promise()
+        .catch(function (err) {
+          if (!/No updates are to be performed/.test(err)) {
+            throw err
+          } else {
+            log('No updates are to be performed.')
+          }
+        })
+
+    } else if (action === 'createchangeset' || action === 'updatechangeset') {
+
+      let changeSetParams = {
+        ChangeSetName: "cfn-change-set-" + (Math.random()*1e150).toString(36),
+        ChangeSetType: action == "createchangeset" ? "CREATE" : "UPDATE"
+      };
+
+      return cf.createChangeSet(merge(cfParams, changeSetParams)).promise()
         .catch(function (err) {
           if (!/No updates are to be performed/.test(err)) {
             throw err
@@ -255,7 +277,7 @@ function SimpleCfn(name, template) {
           }
         })
     }
-    return cf.createStack(cfparms).promise()
+
   }
 
   function loadJs(path) {
@@ -395,6 +417,13 @@ function SimpleCfn(name, template) {
       })
   }
 
+  this.createOrUpdateChangeSet = function () {
+    return this.stackExists()
+      .then(function (exists) {
+        return processStack(exists ? 'updatechangeset' : 'createchangeset', name, template)
+      })
+  }
+
   this.validate = function () {
     return processTemplate(template)
       .then(function (templateObject) {
@@ -431,6 +460,10 @@ simpleCfn.stackExists = function (name) {
 
 simpleCfn.create = function (name, template) {
   return new SimpleCfn(name, template).create()
+}
+
+simpleCfn.createOrUpdateChangeSet = function (name, template) {
+  return new SimpleCfn(name, template).createOrUpdateChangeSet()
 }
 
 simpleCfn.validate = function (template, params) {
