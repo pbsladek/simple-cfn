@@ -272,7 +272,7 @@ function SimpleCfn(name, template) {
     try {
       params = YAML.parse(params)
     } catch (error) {
-      console.log(error)
+      //console.log(error)
     }
 
     if (!params) return Promise.resolve([])
