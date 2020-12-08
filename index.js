@@ -382,13 +382,19 @@ function SimpleCfn(name, template) {
           .then(noramlizedParams => {
             return getStackRoleArnFromName(stackRoleName)
               .then(stackRoleArn => {
-                return processCfStack(action, merge({
+
+                var stackParams = {
                   StackName: name,
                   Capabilities: capabilities,
                   Parameters: noramlizedParams,
-                  RoleARN: stackRoleArn,
                   Tags: convertTags()
-                }, templateObject))
+                }
+
+                if (stackRoleArn) {
+                  stackParams = merge({ RoleARN: stackRoleArn }, stackParams)
+                }
+
+                return processCfStack(action, merge(stackParams, templateObject))
               })
           })
       })
