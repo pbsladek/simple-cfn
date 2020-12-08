@@ -90,6 +90,7 @@ function SimpleCfn(name, template) {
   const tags = opts.tags || {}
   const async = opts.async
   const checkStackInterval = opts.checkStackInterval || _config.checkStackInterval
+  const stackRoleName = opts.stackRoleName || ""
 
   if (PROXY) {
     awsOpts.httpOptions = {
@@ -360,17 +361,41 @@ function SimpleCfn(name, template) {
     return httpsUri.test(template)
   }
 
+  function getStackRoleArnFromName(stackRoleName) {
+    var sts = new AWS.STS();
+    return sts.getCallerIdentity().promise().then(function (data) {
+      if (stackRoleName) {
+        return `arn:aws:iam::${data.Account}:role/${stackRoleName}`
+      } else {
+        return ""
+      }
+    }).catch(function (err) {
+      console.log(`this one ${err}`);
+      return ""
+    });
+  }
+
   function processStack(action, name, template) {
     return processTemplate(template)
       .then(templateObject => {
         return normalizeParams(templateObject, cfParams)
           .then(noramlizedParams => {
-            return processCfStack(action, merge({
-              StackName: name,
-              Capabilities: capabilities,
-              Parameters: noramlizedParams,
-              Tags: convertTags()
-            }, templateObject))
+            return getStackRoleArnFromName(stackRoleName)
+              .then(stackRoleArn => {
+
+                var stackParams = {
+                  StackName: name,
+                  Capabilities: capabilities,
+                  Parameters: noramlizedParams,
+                  Tags: convertTags()
+                }
+
+                if (stackRoleArn) {
+                  stackParams = merge({ RoleARN: stackRoleArn }, stackParams)
+                }
+
+                return processCfStack(action, merge(stackParams, templateObject))
+              })
           })
       })
       .then(function () {
