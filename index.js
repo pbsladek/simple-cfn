@@ -365,7 +365,12 @@ function SimpleCfn(name, template) {
     var sts = new AWS.STS();
     return sts.getCallerIdentity().promise().then(function (data) {
       console.log(`Using stack role: arn:aws:iam::${data.Account}:role/${stackRoleName}`)
-      return `arn:aws:iam::${data.Account}:role/${stackRoleName}`
+
+      if (stackRoleName) {
+        return `arn:aws:iam::${data.Account}:role/${stackRoleName}`
+      } else {
+        return ""
+      }
     }).catch(function (err) {
       console.log(`this one ${err}`);
       return ""
