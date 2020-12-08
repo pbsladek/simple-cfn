@@ -31,7 +31,7 @@ npm install simple-cfn --save-dev
 ```
   Usage
     simple-cfn deploy {stack name} {template} [--{param key}={param value}...]
-    simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--file=/path/to/file]
+    simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--file=/path/to/file] [--stack-role-name role-name ]
     simple-cfn check {template}
     simple-cfn outputs {stack name} {field name}
 
