@@ -363,14 +363,13 @@ function SimpleCfn(name, template) {
 
   function getStackRoleArnFromName(stackRoleName) {
     var sts = new AWS.STS();
-    sts.getCallerIdentity().promise()
-      .then(function (data) {
-        console.log(`Using stack role: arn:aws:iam::${data.Account}:role/${stackRoleName}`)
-        return `arn:aws:iam::${data.Account}:role/${stackRoleName}`
-      }).catch(function (err) {
-        console.log(err);
-        return ""
-      });
+    return sts.getCallerIdentity().promise().then(function (data) {
+      console.log(`Using stack role: arn:aws:iam::${data.Account}:role/${stackRoleName}`)
+      return `arn:aws:iam::${data.Account}:role/${stackRoleName}`
+    }).catch(function (err) {
+      console.log(`this one ${err}`);
+      return ""
+    });
   }
 
   function processStack(action, name, template) {
