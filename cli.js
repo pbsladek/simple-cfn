@@ -17,7 +17,7 @@ process.env.AWS_SDK_LOAD_CONFIG = 1
 const cli = meow(`
   Usage
     simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--{param key}={param value}...]
-    simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--file=/path/to/file]
+    simple-cfn deploy {stack name} {template} [--capability=CAPABILITY] [--file=/path/to/file] [--stack-role-name role-name ]
     simple-cfn check {template}
     simple-cfn outputs {stack name}
     simple-cfn output {stack name} {field name}
@@ -38,7 +38,7 @@ const cmds = {
       const name = cli.input[1]
       const template = cli.input[2]
 
-      let cfParams = _.omit(cli.flags, ['capability', 'file'])
+      let cfParams = _.omit(cli.flags, ['capability', 'file', 'stackRoleName'])
       if (cfParams && Object.keys(cfParams).length > 0) {
         console.log(`${chalk.cyan('Cloud Formation Parameters')}${os.EOL}==========================`)
         console.log(_.toPairs(cfParams).map(a => `${a[0]}: ${a[1]}`).join(os.EOL))
@@ -59,6 +59,14 @@ const cmds = {
         }
       }
 
+      let stackRoleName
+      if (cli.flags.stackRoleName) {
+        stackRoleName = cli.flags.stackRoleName
+        console.log(`${chalk.cyan('Stack using role')}${os.EOL}==========================`)
+        console.log(stackRoleName)
+        console.log(`==========================${os.EOL}`)
+      }
+
       let capabilities
       if (cli.flags.capability) {
         capabilities = Array.isArray(cli.flags.capability) ? cli.flags.capability : [cli.flags.capability]
@@ -67,7 +75,7 @@ const cmds = {
         console.log(`==========================${os.EOL}`)
       }
 
-      return simpleCfn({ name, template, cfParams, capabilities })
+      return simpleCfn({ name, template, cfParams, capabilities, stackRoleName })
     }
   },
 
